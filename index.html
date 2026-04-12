@@ -1,9 +1,245 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>hi </title>
-    </head>
-    <body>
-        <p> sup bitch </p>
-    </body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111;
+    --accent: #00ff88;
+    --accent2: #ff3e6c;
+    --text: #f0f0f0;
+    --muted: #666;
+    --border: #222;
+    --card: #161616;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 2.5rem;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-family: 'Space Mono', monospace; font-size: 1rem; color: var(--accent); letter-spacing: 0.1em; }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.05em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 2.5rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,255,136,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .tag {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: 'Space Mono', monospace; font-size: 0.75rem;
+    color: var(--accent); letter-spacing: 0.1em;
+    margin-bottom: 1.5rem;
+  }
+  .tag::before { content: ''; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  h1 { font-size: clamp(3rem, 8vw, 7rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+  h1 span { color: var(--accent); }
+  .hero-sub { font-size: 1.1rem; color: var(--muted); max-width: 480px; line-height: 1.7; margin-bottom: 2.5rem; }
+  .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.85rem 2rem; border-radius: 4px; font-family: 'Syne', sans-serif;
+    font-size: 0.9rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .btn-primary { background: var(--accent); color: #000; border: 2px solid var(--accent); }
+  .btn-primary:hover { background: transparent; color: var(--accent); }
+  .btn-outline { background: transparent; color: var(--text); border: 2px solid var(--border); }
+  .btn-outline:hover { border-color: var(--text); }
+
+  .scroll-hint { display: flex; align-items: center; gap: 0.5rem; margin-top: 4rem; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 0.7rem; }
+  .scroll-line { width: 40px; height: 1px; background: var(--muted); }
+
+  section { padding: 6rem 2.5rem; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+  .section-title { font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 3rem; }
+  .divider { border: none; border-top: 1px solid var(--border); margin-bottom: 4rem; }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text { font-size: 1.05rem; line-height: 1.8; color: #aaa; }
+  .about-text strong { color: var(--text); }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .stat { border: 1px solid var(--border); padding: 1.5rem; border-radius: 8px; background: var(--card); }
+  .stat-num { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; font-family: 'Space Mono', monospace; }
+
+  .skills-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .skill-tag {
+    padding: 0.5rem 1.2rem; border: 1px solid var(--border); border-radius: 100px;
+    font-size: 0.85rem; font-family: 'Space Mono', monospace; color: var(--muted);
+    transition: all 0.2s; cursor: default;
+  }
+  .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+  .skill-tag.hot { border-color: rgba(0,255,136,0.3); color: var(--accent); }
+
+  .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .project-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.75rem; position: relative; overflow: hidden; transition: border-color 0.2s;
+  }
+  .project-card:hover { border-color: #333; }
+  .project-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .project-card:hover::before { opacity: 1; }
+  .project-num { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); margin-bottom: 1rem; }
+  .project-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .project-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+  .project-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .project-tag { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--accent2); background: rgba(255,62,108,0.1); padding: 0.2rem 0.6rem; border-radius: 4px; }
+
+  .contact-box {
+    border: 1px solid var(--border); border-radius: 12px; padding: 3rem;
+    background: var(--card); text-align: center; max-width: 600px; margin: 0 auto;
+  }
+  .contact-email { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin: 1.5rem 0; font-family: 'Space Mono', monospace; }
+  .social-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; }
+  .social-link { color: var(--muted); text-decoration: none; font-family: 'Space Mono', monospace; font-size: 0.8rem; transition: color 0.2s; }
+  .social-link:hover { color: var(--text); }
+
+  footer { border-top: 1px solid var(--border); padding: 2rem 2.5rem; display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+  .back-top { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .back-top:hover { color: var(--accent); }
+
+  @media (max-width: 700px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">YourName.dev</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="tag">AVAILABLE FOR WORK</div>
+  <h1>Building<br>things for<br>the <span>web.</span></h1>
+  <p class="hero-sub">I'm a developer & security enthusiast who crafts fast, reliable digital experiences and explores cybersecurity.</p>
+  <div class="cta-group">
+    <a href="#projects" class="btn btn-primary">View my work</a>
+    <a href="#contact" class="btn btn-outline">Get in touch</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    SCROLL TO EXPLORE
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-label">01 — About</div>
+  <div class="section-title">Who I am</div>
+  <hr class="divider">
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Hi! I'm <strong>Your Name</strong>, a self-taught developer and tech enthusiast based in <strong>your city</strong>. I build websites, explore cybersecurity, and I'm currently learning how to integrate SIEM tools for real-world security monitoring.</p>
+      <br>
+      <p>When I'm not coding, I'm digging into logs, studying network traffic, and building projects that bridge the gap between <strong>web development and security</strong>.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Projects Built</div></div>
+      <div class="stat"><div class="stat-num">2</div><div class="stat-label">Years Learning</div></div>
+      <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Curiosity</div></div>
+      <div class="stat"><div class="stat-num">1</div><div class="stat-label">Goal: Security Pro</div></div>
+    </div>
+  </div>
+
+  <div style="margin-top: 4rem;">
+    <div class="section-label" style="margin-bottom: 1.5rem;">SKILLS & TOOLS</div>
+    <div class="skills-grid">
+      <div class="skill-tag hot">HTML / CSS</div>
+      <div class="skill-tag hot">JavaScript</div>
+      <div class="skill-tag hot">Python</div>
+      <div class="skill-tag">Linux</div>
+      <div class="skill-tag">Networking</div>
+      <div class="skill-tag">SIEM (Learning)</div>
+      <div class="skill-tag">Git</div>
+      <div class="skill-tag">Docker</div>
+      <div class="skill-tag">SQL</div>
+      <div class="skill-tag">Wireshark</div>
+    </div>
+  </div>
+</section>
+
+<section id="projects" style="background: #0d0d0d;">
+  <div class="section-label">02 — Work</div>
+  <div class="section-title">Selected Projects</div>
+  <hr class="divider">
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-num">001</div>
+      <div class="project-name">This Portfolio</div>
+      <div class="project-desc">My personal space on the internet — built from scratch to showcase my work and document my learning journey in development and cybersecurity.</div>
+      <div class="project-tags"><span class="project-tag">HTML</span><span class="project-tag">CSS</span><span class="project-tag">JS</span></div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">002</div>
+      <div class="project-name">SIEM Dashboard (WIP)</div>
+      <div class="project-desc">A work-in-progress log monitoring dashboard connecting to a local SIEM instance. Visualizes events, alerts, and anomalies in real time.</div>
+      <div class="project-tags"><span class="project-tag">Python</span><span class="project-tag">Security</span><span class="project-tag">SIEM</span></div>
+    </div>
+    <div class="project-card">
+      <div class="project-num">003</div>
+      <div class="project-name">Add your project</div>
+      <div class="project-desc">Got a tool, script, or app you've built? Add it here. Every project you build is a step forward.</div>
+      <div class="project-tags"><span class="project-tag">Your Stack</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-label">03 — Contact</div>
+  <div class="section-title">Let's talk</div>
+  <hr class="divider">
+  <div class="contact-box">
+    <p style="color: var(--muted); line-height: 1.7;">Open to freelance, collaborations, or just a chat about tech and security. Reach out anytime.</p>
+    <div class="contact-email">hello@yourname.dev</div>
+    <a href="#contact" class="btn btn-primary" style="display:inline-block;">Send a message</a>
+    <div class="social-links">
+      <a href="#" class="social-link">GitHub</a>
+      <a href="#" class="social-link">LinkedIn</a>
+      <a href="#" class="social-link">Twitter/X</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-copy">© 2026 YourName — All rights reserved</div>
+  <a href="#" class="back-top">↑ Back to top</a>
+</footer>
+
+</body>
 </html>
